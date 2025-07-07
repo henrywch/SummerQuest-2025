@@ -141,12 +141,17 @@ class HomeworkGrader:
             with open(file_path, 'r', encoding='utf-8') as f:
                 return f.read()
         except UnicodeDecodeError:
-            # 如果UTF-8解码失败，尝试其他编码
+           # 如果 UTF-8 解码失败，尝试 UTF-16
             try:
-                with open(file_path, 'r', encoding='gbk') as f:
+                with open(file_path, 'r', encoding='utf-16') as f:
                     return f.read()
-            except:
-                return f"[无法读取文件内容: {file_path}]"
+            except UnicodeDecodeError:
+                # 如果 UTF-16 也失败，再尝试 GBK
+                try:
+                    with open(file_path, 'r', encoding='gbk') as f:
+                        return f.read()
+                except:
+                    return f"[无法读取文件内容: {file_path}]"
         except Exception as e:
             return f"[读取文件出错: {e}]"
 
