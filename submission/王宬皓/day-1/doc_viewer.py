@@ -12,7 +12,7 @@ from urllib.parse import urlencode, urlparse, parse_qs
 
 import requests
 
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf-8')
 
 WAITING_TIME = 0.01
 MAX_OPS = 500
