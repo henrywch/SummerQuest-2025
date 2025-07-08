@@ -94,4 +94,8 @@ python env_checker.py > hw2_2.log 2>&1 # hw2_2.log
 python vllm_checker.py > hw2_3.log 2>&1 # hw2_3.log
 ```
 
-`2>&1` can include error message into logs, too. And in *env_checker.py* and *vllm_checker.py*, model and tokenizer paths are set as `/data-mnt/data/chwang/models/Qwen3-8B`.
+> `2>&1` can include error message into logs, too. And in *env_checker.py* and *vllm_checker.py*, model and tokenizer paths are set as `/data-mnt/data/chwang/models/Qwen3-8B`.
+
+---
+
+- Tried to grade day-1 homework in *auto_grader.py*.

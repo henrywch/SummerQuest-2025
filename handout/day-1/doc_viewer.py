@@ -1,7 +1,5 @@
 import json
 import os
-import io
-import sys
 import threading
 import time
 import webbrowser
@@ -11,8 +9,6 @@ from urllib import request
 from urllib.parse import urlencode, urlparse, parse_qs
 
 import requests
-
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer,encoding='utf8')
 
 WAITING_TIME = 0.01
 MAX_OPS = 500
@@ -416,48 +412,37 @@ class SimpleLark:
         
         print(f"✅ 成功获取 {len(all_records)} 条记录")
         return all_records
-
-    def get_filtered_records(self, table_name: str = "default", field_names: Optional[List[str]] = None,
-                             field_value: str = "") -> List[Dict[str, Any]]:
-        """获取筛选后的记录，field_names 为多个字段名，任一字段包含 field_value 则保留"""
-
-        if field_names is None:
-            field_names = []
-        all_records = self.get_records(table_name)
-        filtered_records = []
-
-        for record in all_records:
-            fields = record.get("fields", {})
-            for field_name in field_names:
-                if field_name in fields:
-                    field_val = fields[field_name]
-                    # 处理字符串或列表类型
-                    if isinstance(field_val, str):
-                        if field_value in field_val:
-                            filtered_records.append(record)
-                            break
-                    elif isinstance(field_val, list):
-                        for item in field_val:
-                            if isinstance(item, dict) and 'name' in item:
-                                if field_value in item['name']:
-                                    filtered_records.append(record)
-                                    break
-                            else:
-                                if field_value in str(item):
-                                    filtered_records.append(record)
-                                    break
-                    else:
-                        if field_value in str(field_val):
-                            filtered_records.append(record)
-                            break
-        return filtered_records
+    
+    def get_filtered_records(self, table_name: str = "default", field_name: str = "", field_value: str = "") -> List[Dict[str, Any]]:
+        """获取筛选后的记录
+        
+        注意：飞书的筛选语法比较复杂，这里先用简单的客户端筛选
+        """
+        if field_name and field_value:
+            # 先获取所有记录，然后在客户端进行筛选
+            all_records = self.get_records(table_name)
+            filtered_records = []
+            
+            for record in all_records:
+                fields = record.get("fields", {})
+                field_val = fields.get(field_name, "")
+                
+                # 支持字符串包含匹配
+                if isinstance(field_val, str) and field_value in field_val:
+                    filtered_records.append(record)
+                elif str(field_val) == field_value:
+                    filtered_records.append(record)
+            
+            return filtered_records
+        else:
+            return self.get_records(table_name)
 
 
 # 使用示例
 if __name__ == "__main__":
     # 从环境变量获取配置信息
-    app_id = os.environ.get("FEISHU_APP_ID", "cli_a8e0b1bd9239d00e")
-    app_secret = os.environ.get("FEISHU_APP_SECRET", "hfXrO6R1Lmtesdf7BwGrmej0Jbfm3xpv")
+    app_id = os.environ.get("FEISHU_APP_ID", "你的 APP_ID")
+    app_secret = os.environ.get("FEISHU_APP_SECRET", "你的 APP_SECRET")
     bitable_url = "https://fudan-nlp.feishu.cn/base/KH8obWHvqam2Y4sXGGuct2HFnEb?table=tbljlS1fS0UepxBn&view=vewCig26Kk"
     
     # 检查是否提供了真实凭据
@@ -514,28 +499,34 @@ if __name__ == "__main__":
             
     except Exception as e:
         print(f"❌ 获取记录失败: {str(e)}")
-
-    # 2. 筛选“主讲”或“助教”包含“刘智耿”的记录
+    
+    # 2. 筛选特定字段的记录
     print("\n2. 筛选记录演示:")
+    field_name = "课程"  # 替换为你的字段名
+    field_value = "常见框架介绍( llamafactory, verl, vllm)"  # 替换为你要筛选的值
+    
     try:
-        filtered_records = lark.get_filtered_records("default", ["主讲", "助教"], "刘智耿")
-        print(f"筛选条件: 主讲 或 助教 包含 '刘智耿'")
+        filtered_records = lark.get_filtered_records("default", field_name, field_value)
+        print(f"筛选条件: {field_name} = {field_value}")
         print(f"✅ 筛选结果: {len(filtered_records)} 条记录")
-
+        
         for i, record in enumerate(filtered_records):
-            print(f"\n筛选记录 {i + 1}:")
+            print(f"\n筛选记录 {i+1}:")
             fields = record.get("fields", {})
-            for field_name in ["主讲", "助教", "日期", "课程"]:
-                if field_name in fields:
-                    field_value = fields[field_name]
-                    if isinstance(field_value, list) and field_value:
-                        if isinstance(field_value[0], dict) and 'name' in field_value[0]:
-                            display_value = ", ".join([item.get('name', '') for item in field_value])
+            # 只显示关键字段
+            for field_name_item in ["主讲", "助教", "日期", "课程"]:
+                if field_name_item in fields:
+                    field_value_item = fields[field_name_item]
+                    # 简化显示复杂字段
+                    if isinstance(field_value_item, list) and field_value_item:
+                        if isinstance(field_value_item[0], dict) and 'name' in field_value_item[0]:
+                            display_value = ", ".join([item.get('name', '') for item in field_value_item])
                         else:
-                            display_value = str(field_value)
+                            display_value = str(field_value_item)
                     else:
-                        display_value = str(field_value)
-                    print(f"  {field_name}: {display_value}")
+                        display_value = str(field_value_item)
+                    print(f"  {field_name_item}: {display_value}")
+                
     except Exception as e:
         print(f"❌ 筛选记录失败: {str(e)}")
     
