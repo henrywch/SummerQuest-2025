@@ -383,6 +383,20 @@
                 <div class="info-label">当前玩家</div>
             </div>
         </div>
+
+        <!-- 弃牌区详细显示 -->
+        <div class="status-display" id="discardArea" style="display: none;">
+            <h3 class="status-title">🗑️ 弃牌区</h3>
+            <div class="cards-container" id="discardCards">
+                <div style="color: #999; text-align: center; padding: 20px;">暂无弃牌</div>
+            </div>
+        </div>
+
+        <!-- 游戏结束提示 -->
+        <div class="status-display" id="gameEndNotice" style="display: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h3 class="status-title" style="color: white; border-bottom-color: white;">🎉 游戏结束</h3>
+            <div id="gameEndContent" style="text-align: center; font-size: 1.2em;"></div>
+        </div>
     </div>
 
     <script>
@@ -569,6 +583,15 @@
             document.getElementById('gameStatus').style.display = 'block';
             document.getElementById('gameBoard').style.display = 'grid';
             document.getElementById('gameInfo').style.display = 'grid';
+            document.getElementById('discardArea').style.display = 'block';
+            
+            // 检查游戏是否结束
+            if (gameState.state === 'finished') {
+                document.getElementById('gameEndNotice').style.display = 'block';
+                showGameEndResult(gameState);
+            } else {
+                document.getElementById('gameEndNotice').style.display = 'none';
+            }
 
             // 更新游戏状态信息
             const statusContent = document.getElementById('gameStatusContent');
@@ -587,6 +610,9 @@
             const currentPlayerIndex = playerKeys.indexOf(gameState.current_player);
             const currentPlayerDisplay = currentPlayerIndex >= 0 ? `玩家${currentPlayerIndex + 1}` : '-';
             document.getElementById('currentPlayer').textContent = currentPlayerDisplay;
+            
+            // 更新弃牌区显示
+            updateDiscardArea(gameState.discard_pile || []);
             
             // 更新开始游戏按钮状态
             const startBtn = document.getElementById('startGameBtn');
@@ -701,6 +727,45 @@
             };
             return stateMap[state] || state;
         }
+
+        function updateDiscardArea(discardPile) {
+             const discardCardsEl = document.getElementById('discardCards');
+             
+             if (discardPile && discardPile.length > 0) {
+                 discardCardsEl.innerHTML = '';
+                 discardPile.forEach(card => {
+                     const cardEl = createCardElement(card);
+                     discardCardsEl.appendChild(cardEl);
+                 });
+             } else {
+                 discardCardsEl.innerHTML = '<div style="color: #999; text-align: center; padding: 20px;">暂无弃牌</div>';
+             }
+         }
+         
+         function showGameEndResult(gameState) {
+             const gameEndContentEl = document.getElementById('gameEndContent');
+             
+             if (gameState.players && gameState.players.length >= 2) {
+                 const player1 = gameState.players[0];
+                 const player2 = gameState.players[1];
+                 
+                 const player1Score = player1.score_pile ? player1.score_pile.length : 0;
+                 const player2Score = player2.score_pile ? player2.score_pile.length : 0;
+                 
+                 let resultText = '';
+                 if (player1Score > player2Score) {
+                     resultText = `🏆 ${player1.name} 获胜！<br>得分：${player1Score} vs ${player2Score}`;
+                 } else if (player2Score > player1Score) {
+                     resultText = `🏆 ${player2.name} 获胜！<br>得分：${player2Score} vs ${player1Score}`;
+                 } else {
+                     resultText = `🤝 平局！<br>双方得分：${player1Score}`;
+                 }
+                 
+                 gameEndContentEl.innerHTML = resultText;
+             } else {
+                 gameEndContentEl.innerHTML = '游戏已结束';
+             }
+         }
 
         function showMessage(message, type = 'info') {
             const messagesEl = document.getElementById('messages');

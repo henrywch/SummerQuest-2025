@@ -38,10 +38,10 @@ class BotTester:
             print(f"❌ 创建房间异常: {e}")
             return None
             
-    def start_bot(self, bot_script: str, room_id: str) -> subprocess.Popen:
+    def start_bot(self, bot_type: str, room_id: str) -> subprocess.Popen:
         """启动机器人进程"""
         try:
-            cmd = [sys.executable, bot_script, room_id]
+            cmd = [sys.executable, "player_bot.py", room_id, bot_type]
             process = subprocess.Popen(
                 cmd,
                 stdout=subprocess.PIPE,
@@ -50,21 +50,17 @@ class BotTester:
                 bufsize=1,
                 universal_newlines=True
             )
-            print(f"🤖 启动机器人: {bot_script} (PID: {process.pid})")
+            print(f"🤖 启动机器人: {bot_type} (PID: {process.pid})")
             return process
         except Exception as e:
             print(f"❌ 启动机器人失败: {e}")
             return None
             
-    def monitor_bot_output(self, process: subprocess.Popen, bot_name: str, max_lines: int = 20):
+    def monitor_bot_output(self, process: subprocess.Popen, bot_name: str):
         """监控机器人输出"""
-        lines_read = 0
         try:
             for line in process.stdout:
-                if lines_read >= max_lines:
-                    break
                 print(f"{bot_name}: {line.strip()}")
-                lines_read += 1
                 
                 # 检查进程是否结束
                 if process.poll() is not None:
@@ -91,7 +87,7 @@ class BotTester:
         # 2. 启动机器人
         print("📝 步骤2: 启动机器人")
         
-        bot1_process = self.start_bot("player_bot_1.py", room_id)
+        bot1_process = self.start_bot("bot1", room_id)
         if not bot1_process:
             print("❌ 测试失败：无法启动Bot1")
             return
@@ -99,7 +95,7 @@ class BotTester:
         # 等待一秒再启动第二个机器人
         await asyncio.sleep(1)
         
-        bot2_process = self.start_bot("player_bot_2.py", room_id)
+        bot2_process = self.start_bot("bot2", room_id)
         if not bot2_process:
             print("❌ 测试失败：无法启动Bot2")
             bot1_process.terminate()
@@ -108,20 +104,24 @@ class BotTester:
         print("="*50)
         
         # 3. 监控输出
-        print("📝 步骤3: 监控机器人运行（显示前20行输出）")
-        print("💡 提示：机器人将自动加入房间、确认开始游戏并尝试出牌")
-        print("⚠️  注意：由于服务器尚未实现出牌API，机器人只能模拟出牌")
+        print("📝 步骤3: 监控机器人运行（实时显示所有输出）")
+        print("💡 提示：机器人将自动加入房间、确认开始游戏并进行出牌")
+        print("🎮 功能：支持完整的出牌流程，包括10秒超时机制")
+        print("💡 按 Ctrl+C 可以停止测试")
         print("="*50)
         
         # 并发监控两个机器人的输出
-        await asyncio.gather(
-            asyncio.create_task(asyncio.to_thread(
-                self.monitor_bot_output, bot1_process, "Bot1", 20
-            )),
-            asyncio.create_task(asyncio.to_thread(
-                self.monitor_bot_output, bot2_process, "Bot2", 20
-            ))
-        )
+        try:
+            await asyncio.gather(
+                asyncio.create_task(asyncio.to_thread(
+                    self.monitor_bot_output, bot1_process, "Bot1"
+                )),
+                asyncio.create_task(asyncio.to_thread(
+                    self.monitor_bot_output, bot2_process, "Bot2"
+                ))
+            )
+        except KeyboardInterrupt:
+            print("\n⚠️  用户中断测试")
         
         print("="*50)
         print("📝 步骤4: 清理进程")
@@ -180,7 +180,7 @@ class BotTester:
         # 启动机器人
         print("📝 步骤2: 启动机器人")
         
-        bot1_process = self.start_bot("player_bot_1.py", room_id)
+        bot1_process = self.start_bot("bot1", room_id)
         if not bot1_process:
             print("❌ 测试失败：无法启动Bot1")
             return
@@ -188,7 +188,7 @@ class BotTester:
         # 等待一秒再启动第二个机器人
         await asyncio.sleep(1)
         
-        bot2_process = self.start_bot("player_bot_2.py", room_id)
+        bot2_process = self.start_bot("bot2", room_id)
         if not bot2_process:
             print("❌ 测试失败：无法启动Bot2")
             bot1_process.terminate()
@@ -197,20 +197,24 @@ class BotTester:
         print("="*50)
         
         # 监控输出
-        print("📝 步骤3: 监控机器人运行（显示前20行输出）")
-        print("💡 提示：机器人将自动加入房间、确认开始游戏并尝试出牌")
-        print("⚠️  注意：由于服务器尚未实现出牌API，机器人只能模拟出牌")
+        print("📝 步骤3: 监控机器人运行（实时显示所有输出）")
+        print("💡 提示：机器人将自动加入房间、确认开始游戏并进行出牌")
+        print("🎮 功能：支持完整的出牌流程，包括10秒超时机制")
+        print("💡 按 Ctrl+C 可以停止测试")
         print("="*50)
         
         # 并发监控两个机器人的输出
-        await asyncio.gather(
-            asyncio.create_task(asyncio.to_thread(
-                self.monitor_bot_output, bot1_process, "Bot1", 20
-            )),
-            asyncio.create_task(asyncio.to_thread(
-                self.monitor_bot_output, bot2_process, "Bot2", 20
-            ))
-        )
+        try:
+            await asyncio.gather(
+                asyncio.create_task(asyncio.to_thread(
+                    self.monitor_bot_output, bot1_process, "Bot1"
+                )),
+                asyncio.create_task(asyncio.to_thread(
+                    self.monitor_bot_output, bot2_process, "Bot2"
+                ))
+            )
+        except KeyboardInterrupt:
+            print("\n⚠️  用户中断测试")
         
         print("="*50)
         print("📝 步骤4: 清理进程")
@@ -239,31 +243,9 @@ class BotTester:
         
 async def main():
     print("🤖 机器人测试工具")
-    print("本工具将使用指定房间ID启动两个机器人进行测试")
+    print("本工具支持自动创建房间或使用指定房间ID启动两个机器人进行测试")
     print()
     
-    # 检查命令行参数
-    if len(sys.argv) != 2:
-        print("使用方法: python test_bots.py <房间ID>")
-        print("示例: python test_bots.py abcd1234")
-        print()
-        print("💡 提示：请先通过Web界面或API创建房间，然后使用房间ID运行此脚本")
-        sys.exit(1)
-        
-    room_id = sys.argv[1]
-    print(f"🏠 使用房间ID: {room_id}")
-    print()
-    
-    # 检查机器人文件是否存在
-    import os
-    bot_files = ["player_bot_1.py", "player_bot_2.py"]
-    missing_files = [f for f in bot_files if not os.path.exists(f)]
-    
-    if missing_files:
-        print(f"❌ 缺少机器人文件: {', '.join(missing_files)}")
-        print("请确保在正确的目录中运行此脚本")
-        return
-        
     # 检查依赖
     try:
         import aiohttp
@@ -274,7 +256,32 @@ async def main():
         return
         
     tester = BotTester()
-    await tester.run_test_with_room_id(room_id)
+    
+    # 检查命令行参数
+    if len(sys.argv) == 1:
+        # 没有提供房间ID，自动创建房间
+        print("📝 未提供房间ID，将自动创建新房间")
+        print()
+        await tester.run_test()
+    elif len(sys.argv) == 2:
+        # 提供了房间ID，使用指定房间
+        room_id = sys.argv[1]
+        print(f"🏠 使用指定房间ID: {room_id}")
+        print()
+        await tester.run_test_with_room_id(room_id)
+    else:
+        print("使用方法:")
+        print("  python test_bots.py                # 自动创建房间")
+        print("  python test_bots.py <房间ID>       # 使用指定房间")
+        print()
+        print("示例:")
+        print("  python test_bots.py                # 自动创建房间并测试")
+        print("  python test_bots.py abcd1234       # 使用房间ID abcd1234")
+        print()
+        print("💡 提示：")
+        print("  - 不提供参数时会自动创建新房间")
+        print("  - 提供房间ID时会验证房间是否存在")
+        sys.exit(1)
 
 if __name__ == "__main__":
     asyncio.run(main())

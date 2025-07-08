@@ -4,10 +4,9 @@
 
 ## 文件说明
 
-- `player_bot_1.py` - 玩家模拟程序1
-- `player_bot_2.py` - 玩家模拟程序2  
+- `player_bot.py` - 统一的玩家机器人，支持多种配置和策略
 - `test_bots.py` - 自动化测试脚本
-- `bot_requirements.txt` - 机器人程序依赖
+- `bot_requirements.txt` - 机器人依赖包列表
 - `BOT_USAGE.md` - 详细使用说明文档
 
 ## 快速开始
@@ -33,6 +32,18 @@ python main.py
 ```bash
 cd /Users/yuning/workspace/SummerQuest-2025/game/players
 python test_bots.py <房间ID>
+```
+
+## 使用方法
+
+### 基本使用
+```bash
+# 使用预定义配置
+python player_bot.py <房间ID> bot1  # 先出牌策略
+python player_bot.py <房间ID> bot2  # 后出牌策略
+
+# 使用自定义配置
+python player_bot.py <房间ID> --strategy RANDOM_CARD --start-delay 3
 ```
 
 ## 详细文档
