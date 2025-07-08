@@ -1,3 +1,5 @@
+> github: https://github.com/henrywch/SummerQuest-2025.git
+
 ### HW-1
 
 #### Create Custom Feishu APP
@@ -77,3 +79,19 @@ except Exception as e:
 ```shell
 python doc_viewer.py > hw1.log 2>&1
 ```
+
+### HW-2
+
+> Set up env according to official and given documents
+
+- the command for **hw2_1**, **hw2_2**, **hw2_3**
+
+```shell
+nvidia-smi > hw2_1.log 2>&1 # hw2_1.log
+
+python env_checker.py > hw2_2.log 2>&1 # hw2_2.log
+
+python vllm_checker.py > hw2_3.log 2>&1 # hw2_3.log
+```
+
+`2>&1` can include error message into logs, too. And in *env_checker.py* and *vllm_checker.py*, model and tokenizer paths are set as `/data-mnt/data/chwang/models/Qwen3-8B`.
