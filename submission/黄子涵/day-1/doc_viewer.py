@@ -507,7 +507,6 @@ if __name__ == "__main__":
                     print(f"  {field_name}: {display_value}")
             
     except Exception as e:
-        raise e
         print(f"❌ 获取记录失败: {str(e)}")
     
     # 2. 筛选特定字段的记录
