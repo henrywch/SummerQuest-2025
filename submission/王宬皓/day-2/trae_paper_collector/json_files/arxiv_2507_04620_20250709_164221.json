@@ -1,0 +1,27 @@
+{
+  "arxiv_id": "2507.04620",
+  "arxiv_url": "https://arxiv.org/abs/2507.04620",
+  "timestamp": "2025-07-09T16:42:21.159534",
+  "papers": {
+    "main_paper": {
+      "title": "IDAGC: Adaptive Generalized Human-Robot Collaboration via Human Intent\n  Estimation and Multimodal Policy Learning",
+      "abstract": "In Human-Robot Collaboration (HRC), which encompasses physical interaction\nand remote cooperation, accurate estimation of human intentions and seamless\nswitching of collaboration modes to adjust robot behavior remain paramount\nchallenges. To address these issues, we propose an Intent-Driven Adaptive\nGeneralized Collaboration (IDAGC) framework that leverages multimodal data and\nhuman intent estimation to facilitate adaptive policy learning across\nmulti-tasks in diverse scenarios, thereby facilitating autonomous inference of\ncollaboration modes and dynamic adjustment of robotic actions. This framework\novercomes the limitations of existing HRC methods, which are typically\nrestricted to a single collaboration mode and lack the capacity to identify and\ntransition between diverse states. Central to our framework is a predictive\nmodel that captures the interdependencies among vision, language, force, and\nrobot state data to accurately recognize human intentions with a Conditional\nVariational Autoencoder (CVAE) and automatically switch collaboration modes. By\nemploying dedicated encoders for each modality and integrating extracted\nfeatures through a Transformer decoder, the framework efficiently learns\nmulti-task policies, while force data optimizes compliance control and intent\nestimation accuracy during physical interactions. Experiments highlights our\nframework's practical potential to advance the comprehensive development of\nHRC.",
+      "url": "http://arxiv.org/abs/2507.04620v1",
+      "authors": [
+        "Haotian Liu",
+        "Yuchuang Tong",
+        "Guanchen Liu",
+        "Zhaojie Ju",
+        "Zhengtao Zhang"
+      ],
+      "published": "2025-07-07T02:34:23Z",
+      "arxiv_id": "2507.04620v1"
+    },
+    "citing_papers": [],
+    "referenced_papers": []
+  },
+  "summary": {
+    "total_citing": 0,
+    "total_referenced": 0
+  }
+}

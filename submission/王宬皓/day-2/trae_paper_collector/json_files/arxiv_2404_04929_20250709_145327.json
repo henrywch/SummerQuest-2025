@@ -1,0 +1,28 @@
+{
+  "arxiv_id": "2404.04929",
+  "arxiv_url": "https://arxiv.org/abs/2404.04929",
+  "timestamp": "2025-07-09T14:53:27.786513",
+  "papers": {
+    "main_paper": {
+      "title": "RoboMP$^2$: A Robotic Multimodal Perception-Planning Framework with\n  Multimodal Large Language Models",
+      "abstract": "Multimodal Large Language Models (MLLMs) have shown impressive reasoning\nabilities and general intelligence in various domains. It inspires researchers\nto train end-to-end MLLMs or utilize large models to generate policies with\nhuman-selected prompts for embodied agents. However, these methods exhibit\nlimited generalization capabilities on unseen tasks or scenarios, and overlook\nthe multimodal environment information which is critical for robots to make\ndecisions. In this paper, we introduce a novel Robotic Multimodal\nPerception-Planning (RoboMP$^2$) framework for robotic manipulation which\nconsists of a Goal-Conditioned Multimodal Preceptor (GCMP) and a\nRetrieval-Augmented Multimodal Planner (RAMP). Specially, GCMP captures\nenvironment states by employing a tailored MLLMs for embodied agents with the\nabilities of semantic reasoning and localization. RAMP utilizes coarse-to-fine\nretrieval method to find the $k$ most-relevant policies as in-context\ndemonstrations to enhance the planner. Extensive experiments demonstrate the\nsuperiority of RoboMP$^2$ on both VIMA benchmark and real-world tasks, with\naround 10% improvement over the baselines.",
+      "url": "http://arxiv.org/abs/2404.04929v2",
+      "authors": [
+        "Qi Lv",
+        "Hao Li",
+        "Xiang Deng",
+        "Rui Shao",
+        "Michael Yu Wang",
+        "Liqiang Nie"
+      ],
+      "published": "2024-04-07T12:05:47Z",
+      "arxiv_id": "2404.04929v2"
+    },
+    "citing_papers": [],
+    "referenced_papers": []
+  },
+  "summary": {
+    "total_citing": 0,
+    "total_referenced": 0
+  }
+}

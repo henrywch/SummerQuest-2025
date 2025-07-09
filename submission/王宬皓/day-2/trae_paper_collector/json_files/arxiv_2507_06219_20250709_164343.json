@@ -1,0 +1,32 @@
+{
+  "arxiv_id": "2507.06219",
+  "arxiv_url": "https://arxiv.org/abs/2507.06219",
+  "timestamp": "2025-07-09T16:43:43.766468",
+  "papers": {
+    "main_paper": {
+      "title": "Is Diversity All You Need for Scalable Robotic Manipulation?",
+      "abstract": "Data scaling has driven remarkable success in foundation models for Natural\nLanguage Processing (NLP) and Computer Vision (CV), yet the principles of\neffective data scaling in robotic manipulation remain insufficiently\nunderstood. In this work, we investigate the nuanced role of data diversity in\nrobot learning by examining three critical dimensions-task (what to do),\nembodiment (which robot to use), and expert (who demonstrates)-challenging the\nconventional intuition of \"more diverse is better\". Throughout extensive\nexperiments on various robot platforms, we reveal that (1) task diversity\nproves more critical than per-task demonstration quantity, benefiting transfer\nfrom diverse pre-training tasks to novel downstream scenarios; (2)\nmulti-embodiment pre-training data is optional for cross-embodiment\ntransfer-models trained on high-quality single-embodiment data can efficiently\ntransfer to different platforms, showing more desirable scaling property during\nfine-tuning than multi-embodiment pre-trained models; and (3) expert diversity,\narising from individual operational preferences and stochastic variations in\nhuman demonstrations, can be confounding to policy learning, with velocity\nmultimodality emerging as a key contributing factor. Based on this insight, we\npropose a distribution debiasing method to mitigate velocity ambiguity, the\nyielding GO-1-Pro achieves substantial performance gains of 15%, equivalent to\nusing 2.5 times pre-training data. Collectively, these findings provide new\nperspectives and offer practical guidance on how to scale robotic manipulation\ndatasets effectively.",
+      "url": "http://arxiv.org/abs/2507.06219v1",
+      "authors": [
+        "Modi Shi",
+        "Li Chen",
+        "Jin Chen",
+        "Yuxiang Lu",
+        "Chiming Liu",
+        "Guanghui Ren",
+        "Ping Luo",
+        "Di Huang",
+        "Maoqing Yao",
+        "Hongyang Li"
+      ],
+      "published": "2025-07-08T17:52:44Z",
+      "arxiv_id": "2507.06219v1"
+    },
+    "citing_papers": [],
+    "referenced_papers": []
+  },
+  "summary": {
+    "total_citing": 0,
+    "total_referenced": 0
+  }
+}

@@ -790,26 +790,4 @@ async def analyze_arxiv_citations(
 
 if __name__ == "__main__":
     # Run the FastMCP server
-    mcp.run(port=8000)  # Adjust port as needed
-    
-    # Initialize the client
-    client = Client(mcp)  # Adjust port if needed
-
-    async def analyze_paper():
-        arxiv_url = "https://arxiv.org/abs/2106.11581 "  # Example paper
-        try:
-            result = await client.call_tool(
-                "analyze_arxiv_citations",
-                {
-                    "arxiv_url": arxiv_url,
-                    "debug": True
-                }
-            )
-            print("Analysis Result:")
-            print(json.dumps(result, indent=2))  # Pretty-print results
-        except Exception as e:
-            print(f"Error: {e}")
-
-    # Run the analysis
-    import asyncio
-    asyncio.run(analyze_paper())
+    mcp.run()  # Adjust port as needed

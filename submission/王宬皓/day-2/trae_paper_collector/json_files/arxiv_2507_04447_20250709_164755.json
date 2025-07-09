@@ -1,0 +1,35 @@
+{
+  "arxiv_id": "2507.04447",
+  "arxiv_url": "https://arxiv.org/abs/2507.04447",
+  "timestamp": "2025-07-09T16:47:55.404282",
+  "papers": {
+    "main_paper": {
+      "title": "DreamVLA: A Vision-Language-Action Model Dreamed with Comprehensive\n  World Knowledge",
+      "abstract": "Recent advances in vision-language-action (VLA) models have shown promise in\nintegrating image generation with action prediction to improve generalization\nand reasoning in robot manipulation. However, existing methods are limited to\nchallenging image-based forecasting, which suffers from redundant information\nand lacks comprehensive and critical world knowledge, including dynamic,\nspatial and semantic information. To address these limitations, we propose\nDreamVLA, a novel VLA framework that integrates comprehensive world knowledge\nforecasting to enable inverse dynamics modeling, thereby establishing a\nperception-prediction-action loop for manipulation tasks. Specifically,\nDreamVLA introduces a dynamic-region-guided world knowledge prediction,\nintegrated with the spatial and semantic cues, which provide compact yet\ncomprehensive representations for action planning. This design aligns with how\nhumans interact with the world by first forming abstract multimodal reasoning\nchains before acting. To mitigate interference among the dynamic, spatial and\nsemantic information during training, we adopt a block-wise structured\nattention mechanism that masks their mutual attention, preventing information\nleakage and keeping each representation clean and disentangled. Moreover, to\nmodel the conditional distribution over future actions, we employ a\ndiffusion-based transformer that disentangles action representations from\nshared latent features. Extensive experiments on both real-world and simulation\nenvironments demonstrate that DreamVLA achieves 76.7% success rate on real\nrobot tasks and 4.44 average length on the CALVIN ABC-D benchmarks.",
+      "url": "http://arxiv.org/abs/2507.04447v1",
+      "authors": [
+        "Wenyao Zhang",
+        "Hongsi Liu",
+        "Zekun Qi",
+        "Yunnan Wang",
+        "XinQiang Yu",
+        "Jiazhao Zhang",
+        "Runpei Dong",
+        "Jiawei He",
+        "He Wang",
+        "Zhizheng Zhang",
+        "Li Yi",
+        "Wenjun Zeng",
+        "Xin Jin"
+      ],
+      "published": "2025-07-06T16:14:29Z",
+      "arxiv_id": "2507.04447v1"
+    },
+    "citing_papers": [],
+    "referenced_papers": []
+  },
+  "summary": {
+    "total_citing": 0,
+    "total_referenced": 0
+  }
+}
