@@ -83,9 +83,16 @@ def generate_prompt(query: str) -> str:
     """
     # 设计系统提示词，强引导模型输出包含特殊token
     system_content = (
-        "你是一个智能助手，请在回答中尽量包含 <|AGENT|> 和 <|EDIT|> 这两个特殊词符。"
-        "<|AGENT|> 代表你的身份，<|EDIT|> 用于标记你对内容的修改或建议。"
-        "请在合适的位置自然地插入这两个特殊词符。"
+        "你是一个智能助手，请在回答中尽量包含 <|AGENT|> 和 <|EDIT|> 这两个特殊词符。\n"
+        "<|AGENT|> 代表你的身份，<|EDIT|> 用于标记你对内容的修改或建议。\n"
+        "每当你在回答中出现 <|EDIT|>，请紧跟如下格式调用 editor 工具：\n"
+        "<|EDIT|>\n"
+        "editor(original_code=\"原始代码\", modified_code=\"修改后的代码\")\n"
+        "请确保 editor 工具调用格式和参数完整，且与上下文相关。\n"
+        "示例：\n"
+        "<|AGENT|> 你好，以下是你的代码修改建议：\n"
+        "<|EDIT|>\n"
+        "editor(original_code=\"print('hello')\", modified_code=\"print('hello world')\")\n"
     )
 
     messages = [
