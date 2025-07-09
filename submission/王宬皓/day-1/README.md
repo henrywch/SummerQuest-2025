@@ -1,6 +1,6 @@
 > github: https://github.com/henrywch/SummerQuest-2025.git
 
-### HW-1
+### Day-1 HW-1
 
 #### Create Custom Feishu APP
 
@@ -80,7 +80,7 @@ except Exception as e:
 python doc_viewer.py > hw1.log 2>&1
 ```
 
-### HW-2
+### Day-1 HW-2
 
 > Set up env according to official and given documents
 
