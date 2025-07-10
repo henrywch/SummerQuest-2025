@@ -1,6 +1,6 @@
 # CL‑MoE 持续学习相关研究分类
 
-基于论文 **CL‑MoE: Enhancing Multimodal Large Language Model with Dual Momentum Mixture-of-Experts for Continual Visual Question Answering**（https://arxiv.org/abs/2503.00413）的相关研究，按照方法分类如下：
+基于论文 **CL‑MoE: Enhancing Multimodal Large Language Model with Dual Momentum Mixture-of-Experts for Continual Visual Question Answering** (https://arxiv.org/abs/2503.00413) 的相关研究，按照方法分类如下：
 
 ## MoE 架构扩展相关
 
