@@ -1,0 +1,6 @@
+[submodule "submission/王宬皓/submission/王宬皓/day-5/hw5_4/LLaMA-Factory"]
+	path = submission/王宬皓/submission/王宬皓/day-5/hw5_4/LLaMA-Factory
+	url = https://github.com/hiyouga/LLaMA-Factory.git
+[submodule "submission/王宬皓/submission/王宬皓/day-5/hw5_4/opencompass"]
+	path = submission/王宬皓/submission/王宬皓/day-5/hw5_4/opencompass
+	url = https://github.com/open-compass/opencompass.git
