@@ -14,7 +14,7 @@ tokenizer = AutoTokenizer.from_pretrained("./tokenizer_with_special_tokens", tru
 
 # vLLM 引擎配置
 llm = vllm.LLM(
-    model="/data-mnt/data/downloaded_ckpts/Qwen3-8B",
+    model="/remote-home1/share/models/Qwen3-8B",
     gpu_memory_utilization=0.8, 
     trust_remote_code=True,
     enforce_eager=True,
@@ -24,10 +24,8 @@ llm = vllm.LLM(
 print("vLLM 引擎和分词器初始化完成！")
 
 # 读取查询数据
-with open('/data-mnt/data/camp-2025/SummerQuest-2025/handout/day-3/query_only.json', 'r', encoding='utf-8') as f:
+with open('query_only.json', 'r', encoding='utf-8') as f:
     queries = json.load(f)
-
-
 
 # 配置采样参数
 sampling_params = vllm.SamplingParams(
@@ -83,34 +81,45 @@ def generate_prompt(query: str) -> str:
     """
     为单个查询生成prompt
     """
-    system_content = (
-    "你是一个编程领域的专家，擅长调试和优化代码。请根据用户需求选择以下两种模式之一进行响应：\n"
-    "1. **代理模式 (<|AGENT|>)**: 当用户提出代码调试或分析的需求时，首先使用 `python` 工具执行代码以验证或分析问题，然后使用 `editor` 工具进行代码修改。代理模式的输出应该以 `<|AGENT|>` 开头。\n"
-    "2. **编辑模式 (<|EDIT|>)**: 当用户需要直接修改、重构或合并代码时，直接使用 `editor` 工具进行修改。编辑模式的输出应该以 `<|EDIT|>` 开头。\n"
-    "请确保你的输出符合所选模式的格式，并调用相应的工具。\n"
-    "示例：\n"
-    
-    "1. **代理模式示例**:\n"
-    "   Query: `我的代码总是报错，能帮我找找问题吗？\\n\\ndef calc_sum(nums):\\n    total = 0\\n    for i in nums:\\ntotal += i`\n"
-    "   Output: `<think> 用户没有明确指出错误类型，我应该先调试代码，查看是否有异常</think>\\n<|AGENT|>\\n"
-    "   我会使用代理模式执行代码进行调试{\"name\": \"python\", \"arguments\": {\"code\": \"def calc_sum(nums):\\n    total = 0\\n    for i in nums:\\n        total += i\"}}`\n"
-    "   **注意**: `<think>` 用于思考用户指令，`<|AGENT|>` 标记代理模式。\n\n"
-    
-    "2. **编辑模式示例**:\n"
-    "   Query: `我的代码运行正常，但我想增加一个功能，能帮助我修改代码吗？\\n\\ndef greet(name):\\n    print('Hello ' + name)`\n"
-    "   Output: `<think> 用户要求我增加一个新的功能，给greet函数添加问候内容</think>\\n<|EDIT|>\\n"
-    "   我会使用编辑模式来修改代码，添加新的问候内容。{\"name\": \"editor\", \"arguments\": {\"original_code\": \"def greet(name):\\n    print('Hello ' + name)\", "
-    "\"modified_code\": \"def greet(name):\\n    print('Hello ' + name + ', welcome to the community!')\"}}`\n"
-    "   **注意**: `<think>` 用于思考用户指令，`<|EDIT|>` 标记编辑模式。\n\n"
-    
-    "3. **同时使用代理模式和编辑模式示例**:\n"
-    "   Query: `我的代码报错了，但我不确定为什么，能帮我修复吗？\\n\\ndef multiply(a, b):\\n    return a + b`\n"
-    "   Output: `<think> 用户提到报错但没有明确错误信息，我应该先调试代码以找出具体问题</think>\\n<|AGENT|>\\n"
-    "   我会使用代理模式进行调试，首先检查代码逻辑，看看是否有任何异常。{\"name\": \"python\", \"arguments\": {\"code\": \"def multiply(a, b):\\n    return a + b\"}}\\n"
-    "<think> 调试完成，发现加法错误，应该使用乘法符号，接下来我会修复这个问题</think>\\n<|EDIT|>\\n"
-    "   我会使用编辑模式修复错误。{\"name\": \"editor\", \"arguments\": {\"original_code\": \"def multiply(a, b):\\n    return a + b\", "
-    "\"modified_code\": \"def multiply(a, b):\\n    return a * b\"}}`\n"
-    "   **注意**: `<think>` 用于思考用户指令，`<|AGENT|>` 标记代理模式，`<|EDIT|>` 标记编辑模式。\n")# TODO
+    system_content = """你是一个专业的AI代码助手。你的任务是分析用户的代码修复请求，并选择最合适的工具来处理。你有两种工作模式：
+
+1.  **AGENT模式**: 当用户的问题比较模糊，没有提供明确的错误信息，需要你先运行和调试代码来找出问题时，你必须使用AGENT模式。此模式由特殊词符 `<|AGENT|>` 触发，并调用 `python` 工具来执行代码。
+2.  **EDIT模式**: 当用户提供了明确的错误信息（如 `IndentationError`），或者代码中的错误非常明显（如拼写错误、简单的逻辑错误），可以直接修复时，你必须使用EDIT模式。此模式由特殊词符 `<|EDIT|>` 触发，并调用 `editor` 工具来提供修复前后的代码。
+
+你的输出必须严格遵循以下格式：
+1.  首先，在 `<think>` 和 `</think>` 标签内进行思考，分析问题并决定使用哪种模式。
+2.  然后，换行并输出你选择的模式对应的特殊词符（`<|AGENT|>` 或 `<|EDIT|>`）。
+3.  最后，紧接着输出对相应工具（`python` 或 `editor`）的JSON格式调用。不要在特殊词符和JSON调用之间添加任何多余的文字。
+
+---
+**示例:**
+
+**示例 1: 需要分析，使用 AGENT 模式**
+[USER]
+帮我修复这个代码中的 BUG
+def add(a, b):
+    return a - b
+[ASSISTANT]
+<think>用户没有直接告诉我 BUG 是什么，所以我需要先调试代码再进行分析，我应该使用代理模式进行尝试</think>
+<|AGENT|>
+我会使用代理模式进行处理{"name": "python", "arguments": {"code": "def add(a, b):\\n    return a - b"}}
+
+**示例 2: 错误明确，使用 EDIT 模式**
+[USER]
+报错信息：IndentationError: expected an indented block
+修复这个缩进错误
+def check_positive(num):
+if num > 0:
+return True
+else:
+return False
+[ASSISTANT]
+<think>用户提供了IndentationError错误信息，说明缩进不正确，我应该直接修复缩进问题</think>
+<|EDIT|>
+我会使用编辑模式修复缩进错误{"name": "editor", "arguments": {"original_code": "def check_positive(num):\\nif num > 0:\\nreturn True\\nelse:\\nreturn False", "modified_code": "def check_positive(num):\\n    if num > 0:\\n        return True\\n    else:\\n        return False"}}
+---
+
+现在，请处理以下用户请求。"""
 
     messages = [
         {"role": "system", "content": system_content},
@@ -119,10 +128,9 @@ def generate_prompt(query: str) -> str:
     
     text = tokenizer.apply_chat_template(
         messages,
-        tokenize=False,
-        add_generation_prompt=True,
         tools=tools,
-        temperature=0.7
+        add_generation_prompt=True,
+        tokenize=False,
     )
     
     return text
