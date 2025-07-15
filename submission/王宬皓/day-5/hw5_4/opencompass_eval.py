@@ -8,7 +8,10 @@ from opencompass.openicl.icl_prompt_template import PromptTemplate
 from opencompass.runners import LocalRunner
 from opencompass.partitioners import NumWorkerPartitioner, NaivePartitioner
 from opencompass.tasks import OpenICLInferTask, OpenICLEvalTask
-from opencompass.utils.text_postprocessors import first_capital_postprocess  # Fixed import
+from opencompass.utils.text_postprocessors import gsm8k_postprocess
+
+# Import for timestamp
+from datetime import datetime
 
 # ============================== Model Configs ==============================
 models = [
@@ -29,7 +32,11 @@ models = [
         path="/data-mnt/data/chwang/models/Qwen2.5-0.5B",
         max_out_len=1024,
         batch_size=16,
-        run_cfg=dict(num_gpus=1)
+        run_cfg=dict(num_gpus=1),
+        generation_kwargs={
+            'eos_token_id': 151643,  # Qwen tokenizer eos_token_id
+            'pad_token_id': 151643,
+        }
     ),
     # SFT small model (HuggingFace backend, single GPU)
     dict(
@@ -38,11 +45,21 @@ models = [
         path="/data-mnt/data/chwang/models/Qwen2.5-0.5B-LoRA",
         max_out_len=1024,
         batch_size=16,
-        run_cfg=dict(num_gpus=1)
+        run_cfg=dict(num_gpus=1),
+        generation_kwargs={
+            'eos_token_id': 151643,  # Qwen tokenizer eos_token_id
+            'pad_token_id': 151643,
+        }
     )
 ]
 
 # ============================= Dataset Config =============================
+# Proper GSM8K prompt template
+gsm8k_prompt = """
+Solve the following math problem step by step. Put your final answer in a boxed format.
+
+Question: {question}"""
+
 # Reader configuration
 gsm8k_reader = dict(
     input_columns=['question'],
@@ -62,14 +79,13 @@ datasets = [
             prompt_template=dict(
                 type=PromptTemplate,
                 template=dict(round=[
-                    dict(role="HUMAN", prompt="{question}")
+                    dict(role="HUMAN", prompt=gsm8k_prompt.strip())
                 ])
             )
         ),
         eval_cfg=dict(
             evaluator=dict(type='AccEvaluator'),
-            # Fixed: Use imported postprocessor function
-            pred_postprocessor=dict(type=first_capital_postprocess),
+            pred_postprocessor=dict(type=gsm8k_postprocess),  # Correct GSM8K processor
         )
     )
 ]
@@ -100,17 +116,21 @@ eval = dict(
 
 # ============================ Output Settings ============================
 # Set output directory with timestamp to avoid conflicts
-from datetime import datetime
 timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 work_dir = osp.join('outputs', f'gsm8k_comparison_{timestamp}')
 
 # ============================ Summarizer Config ==========================
 summarizer = dict(
-    type="SingleTableSummarizer",
+    type="ComparisonSummarizer",  # Changed to comparison type
     dataset_abbrs=['gsm8k'],
     summary_groups=[{
-        'name': 'gsm8k_accuracy',
+        'name': 'gsm8k_comparison',
         'subsets': ['gsm8k'],
+        'models': [
+            'qwen2.5-math-7b', 
+            'qwen2.5-0.5b-raw', 
+            'qwen2.5-0.5b-sft'
+        ],  # Explicitly list models for comparison
         'metrics': ['accuracy']
     }]
 )

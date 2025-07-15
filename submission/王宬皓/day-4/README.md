@@ -1,3 +1,5 @@
+> github: https://bgithub.xyz/henrywch/SummerQuest-2025/tree/main/submission/王宬皓/day-4
+
 ### Day-4 HW_4 Draft
 
 #### Logic
