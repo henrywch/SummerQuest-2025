@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 > github: https://bgithub.xyz/henrywch/SummerQuest-2025/tree/main/submission/王宬皓/day-4
 
-=======
->>>>>>> 2d5759903a9349cba48618c19b3aa678c4db5095
 ### Day-4 HW_4 Draft
 
 #### Logic
@@ -109,3 +106,9 @@ graph TD;
 #### Note
 
 > The codes are unfinished. Future improvement involve debugs and connect to mmcp servers.
+
+#### Links
+
+[Generate SQuAD-Based Dataset](./generate_squad_dataset.py "generate_squad_dataset.py")
+
+[Model SFT and PPO Training](./train_model.py "train_model.py")
